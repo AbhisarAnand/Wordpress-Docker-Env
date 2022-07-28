@@ -1,0 +1,39 @@
+version: "3.3"
+
+services:
+  wordpress:
+    image: wordpress:6.0.1
+    restart: unless-stopped
+    ports:
+      - "9002:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: 
+      WORDPRESS_DB_PASSWORD: 
+      WORDPRESS_DB_NAME: LPBI
+    volumes:
+    - ./wordpress:/var/www/html:rw
+  
+  mysql:
+    image: mysql:8.0.29
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: LPBI
+      MYSQL_USER: 
+      MYSQL_PASSWORD: 
+      MYSQL_RANDOM_ROOT_PASSWORD: "1"
+    ports:
+      - "9004:3306"
+    volumes:
+      - ./mysql:/var/lib/mysql
+  
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    ports:
+      - "9003:80"
+
+volumes:
+  wordpress:
+  mysql:
