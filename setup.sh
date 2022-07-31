@@ -13,18 +13,32 @@ echo "...Directories Made..."
 
 # Download Database Files
 echo "...Downloading Database Files..."
-# TODO
-npx wpress-extract *.wpress
+curl -L https://dropbox.com/s/xs4281xr6tbdvuw/pharmaceuticalintelligence.com-20220728-193009-gewymu.wpress?dl=0 -o backup.wpress
+npx wpress-extract backup.wpress
+mv backup/database.sql /schema/.
 echo "...Database Files Downloaded..."
 
 # Download WP-Content Files
-echo "...Downloading WP-Content Files..."
-# TODO
-echo "...WP-Content Files Downloaded..."
+echo "...Reconfiguring WP-Content Files..."
+cd wordpress
+[ -d wp-content ] || mkdir wp-content
+cd wp-content
+[ -d ai1wm-backups ] || mkdir ai1wm-backups
+[ -d cache ] || mkdir cache
+[ -d upgrade ] || mkdir upgrade
+cd ..
+cd ..
+mv backup/mu-plugins wordpress/wp-content/
+mv backup/plugins wordpress/wp-content/
+mv backup/themes wordpress/wp-content/
+mv backup/uploads wordpress/wp-content/
+mv backup/index.php wordpress/wp-content/
+echo "...WP-Content Files Reconfigured..."
 
 # Run Docker Container
 echo "...Running Docker Container..."
-docker-compose up -d
+docker compose up -d
+sleep 15
 echo "...Docker Container Running..."
 
 # Create Database
@@ -38,3 +52,7 @@ SOURCE schema/database.sql;
 EOF
 echo "...Database Set Up..."
 
+# Stop Docker Container
+echo "...Stopping Docker Container..."
+docker compose down
+echo "...Docker Container Stopping..."
