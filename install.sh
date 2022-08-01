@@ -16,9 +16,8 @@ echo "...Installing MySQL..."
 sudo apt install aptitude -y
 sudo apt install mysql-server -y
 sudo systemctl start mysql.service
-mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY $password;"
+mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY $password;"
 mysql -u root <<-EOF
-UPDATE mysql.user SET Password=PASSWORD($password) WHERE User='root';
 DELETE FROM mysql.user WHERE User='root' AND Host NOT IN ('localhost', '127.0.0.1', '::1');
 DELETE FROM mysql.user WHERE User='';
 FLUSH PRIVILEGES;
@@ -58,3 +57,8 @@ echo "...Installing Node and NPM..."
 sudo apt install nodejs -y
 sudo apt install npm -y
 echo "...Node and NPM Installed..."
+
+# Clean up
+echo "...Cleaning Up..."
+sudo apt autoremove
+echo "...Cleaned Up..."
